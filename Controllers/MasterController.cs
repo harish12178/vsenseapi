@@ -45,9 +45,6 @@ namespace VSense.API.Controllers
         }
         public async Task<IActionResult> deviceparam(m_device_param device)
         {
-            if(await repo.GetDeviceparam(device.ParamID)!=null){
-                return BadRequest("deviceparam already exists");
-            }
             var created=await repo.CreateDeviceParam(device);
             return Ok(created);
         }
@@ -93,8 +90,8 @@ namespace VSense.API.Controllers
             return Ok();
 
         }
-        public async Task<IActionResult> deletedeviceparam(string id){
-            await repo.DeleteDeviceparam(id);
+        public async Task<IActionResult> deletedeviceparam(string deviceid,string paramid){
+            await repo.DeleteDeviceparam(deviceid,paramid);
             return Ok();
 
         }

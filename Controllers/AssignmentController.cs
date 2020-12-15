@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using VSense.API.Repositories;
 using VSense.API.Models;
+using System.Collections.Generic;
 namespace VSense.API.Controllers
 {
     [Route("VSenseAPI/[controller]/[action]")]
@@ -19,11 +20,11 @@ namespace VSense.API.Controllers
             var log = await repo.GetDevicesByEquipment(equipmentid);
             return Ok(log);
         }
-        public async Task<IActionResult> getassingidbydeviceid(string assignmentid){
-            var log = await repo.GetAssignidByDeviceid(assignmentid);
+        
+        public async Task<IActionResult> getdeviceassignparam(int assignmentid,string pramid){
+            var log=await repo.GetDeviceAssignParam(assignmentid,pramid);
             return Ok(log);
         }
-
         public async Task<IActionResult> getalldeviceassigns(){
             return Ok(await this.repo.GetAllDeviceassigns());
         }
@@ -33,9 +34,6 @@ namespace VSense.API.Controllers
 
         public async Task<IActionResult> deviceassign(t_device_assign device)
         {
-            if(await repo.GetDeviceAssign(device.assignmentID)!=null){
-                return BadRequest("assignment already exists");
-            }
             var created=await repo.CreateDeviceAssign(device);
             return Ok(created);
         }
@@ -44,28 +42,23 @@ namespace VSense.API.Controllers
             var created=await repo.UpdateDeviceAssign(device);
             return Ok(created);
         }
-        public async Task<IActionResult> deletedeviceassign(string id){
+        public async Task<IActionResult> deletedeviceassign(int id){
             await repo.DeleteDeviceAssign(id);
             return Ok();
-
         }
-        public async Task<IActionResult> deviceassignparam(t_device_assign_param device)
+        public async Task<IActionResult> deviceassignparam(List<t_device_assign_param> device)
         {
-            if(await repo.GetDeviceAssignParam(device.PramID)!=null){
-                return BadRequest("PramID already exists");
-            }
             var created=await repo.CreateDeviceAssignParam(device);
             return Ok(created);
         }
-        public async Task<IActionResult> updatedeviceassignparam(t_device_assign_param device)
+        public async Task<IActionResult> updatedeviceassignparam(List<t_device_assign_param> device)
         {
             var created=await repo.UpdateDeviceAssignParam(device);
             return Ok(created);
         }
-        public async Task<IActionResult> deletedeviceassignparam(string id){
-            await repo.DeleteDeviceAssign(id);
+        public async Task<IActionResult> deletedeviceassignparam(string pramid,int assignmentid){
+            await repo.DeleteDeviceAssignParam(pramid,assignmentid);
             return Ok();
-
         }
     }
 }

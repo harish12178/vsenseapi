@@ -131,3 +131,8 @@ C:\Users\Harish\VSense.API\obj\Debug\netcoreapp3.1\staticwebassets\VSense.API.St
 C:\Users\Harish\VSense.API\obj\Debug\netcoreapp3.1\VSense.API.dll
 C:\Users\Harish\VSense.API\obj\Debug\netcoreapp3.1\VSense.API.pdb
 C:\Users\Harish\VSense.API\obj\Debug\netcoreapp3.1\VSense.API.genruntimeconfig.cache
+C:\Users\Harish\VSense.API\bin\Debug\netcoreapp3.1\vsense_api_V3.3\web.config
+C:\Users\Harish\VSense.API\bin\Debug\netcoreapp3.1\vsense_api_V3.3\appsettings.Development.json
+C:\Users\Harish\VSense.API\bin\Debug\netcoreapp3.1\vsense_api_V3.3\appsettings.json
+C:\Users\Harish\VSense.API\bin\Debug\netcoreapp3.1\vsense_api_V3.3\VSense.API.deps.json
+C:\Users\Harish\VSense.API\bin\Debug\netcoreapp3.1\vsense_api_V3.3\VSense.API.runtimeconfig.json

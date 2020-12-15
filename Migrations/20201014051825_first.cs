@@ -1,34 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace VSense.API.Migrations
 {
-    public partial class one : Migration
+    public partial class first : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Device_log",
-                columns: table => new
-                {
-                    LogID = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DeviceID = table.Column<string>(nullable: true),
-                    RefID = table.Column<string>(nullable: true),
-                    dateTime = table.Column<DateTime>(nullable: false),
-                    PramID = table.Column<string>(nullable: true),
-                    value = table.Column<float>(nullable: false),
-                    minValue = table.Column<float>(nullable: false),
-                    maxValue = table.Column<float>(nullable: false),
-                    avgValue = table.Column<float>(nullable: false),
-                    Threshold = table.Column<float>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Device_log", x => x.LogID);
-                });
-
             migrationBuilder.CreateTable(
                 name: "m_device",
                 columns: table => new
@@ -41,12 +19,7 @@ namespace VSense.API.Migrations
                     Healthy = table.Column<int>(nullable: false),
                     SoftwareVersion = table.Column<string>(nullable: true),
                     Vcc = table.Column<float>(nullable: false),
-                    Lifespan = table.Column<int>(nullable: false),
-                    isEnabled = table.Column<bool>(nullable: false),
-                    createdOn = table.Column<DateTime>(nullable: false),
-                    createdBy = table.Column<string>(nullable: true),
-                    modifiedOn = table.Column<DateTime>(nullable: true),
-                    modifiedBy = table.Column<string>(nullable: true)
+                    Lifespan = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,12 +34,7 @@ namespace VSense.API.Migrations
                     Text = table.Column<string>(nullable: true),
                     GeoLoc = table.Column<string>(nullable: true),
                     Plant = table.Column<string>(nullable: true),
-                    Workcenter = table.Column<string>(nullable: true),
-                    isEnabled = table.Column<bool>(nullable: false),
-                    createdOn = table.Column<DateTime>(nullable: false),
-                    createdBy = table.Column<string>(nullable: true),
-                    modifiedOn = table.Column<DateTime>(nullable: true),
-                    modifiedBy = table.Column<string>(nullable: true)
+                    Workcenter = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,12 +50,7 @@ namespace VSense.API.Migrations
                     WorkCenter = table.Column<string>(nullable: true),
                     Plant = table.Column<string>(nullable: true),
                     Geo = table.Column<string>(nullable: true),
-                    ParantLocationID = table.Column<string>(nullable: true),
-                    isEnabled = table.Column<bool>(nullable: false),
-                    createdOn = table.Column<DateTime>(nullable: false),
-                    createdBy = table.Column<string>(nullable: true),
-                    modifiedOn = table.Column<DateTime>(nullable: true),
-                    modifiedBy = table.Column<string>(nullable: true)
+                    ParantLocationID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -95,11 +58,26 @@ namespace VSense.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "m_TrkDo",
+                columns: table => new
+                {
+                    TrkDoID = table.Column<string>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
+                    UniqueID = table.Column<string>(nullable: true),
+                    LifeStatus = table.Column<string>(nullable: true),
+                    isAssinged = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_m_TrkDo", x => x.TrkDoID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "m_device_param",
                 columns: table => new
                 {
+                    DeviceID = table.Column<string>(nullable: false),
                     ParamID = table.Column<string>(nullable: false),
-                    DeviceID = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Unit = table.Column<string>(nullable: true),
                     longText = table.Column<string>(nullable: true),
@@ -107,22 +85,17 @@ namespace VSense.API.Migrations
                     Min = table.Column<int>(nullable: false),
                     Icon = table.Column<string>(nullable: true),
                     isPercentage = table.Column<string>(nullable: true),
-                    Color = table.Column<string>(nullable: true),
-                    isEnabled = table.Column<bool>(nullable: false),
-                    createdOn = table.Column<DateTime>(nullable: false),
-                    createdBy = table.Column<string>(nullable: true),
-                    modifiedOn = table.Column<DateTime>(nullable: true),
-                    modifiedBy = table.Column<string>(nullable: true)
+                    Color = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_m_device_param", x => x.ParamID);
+                    table.PrimaryKey("PK_m_device_param", x => new { x.DeviceID, x.ParamID });
                     table.ForeignKey(
                         name: "FK_m_device_param_m_device_DeviceID",
                         column: x => x.DeviceID,
                         principalTable: "m_device",
                         principalColumn: "DeviceID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,18 +103,13 @@ namespace VSense.API.Migrations
                 columns: table => new
                 {
                     assignmentID = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     DeviceID = table.Column<string>(nullable: true),
                     EquipmentID = table.Column<string>(nullable: true),
                     StDateTime = table.Column<DateTime>(nullable: false),
                     enDateTime = table.Column<DateTime>(nullable: false),
                     Frequency = table.Column<int>(nullable: false),
-                    LocID = table.Column<string>(nullable: true),
-                    isEnabled = table.Column<bool>(nullable: false),
-                    createdOn = table.Column<DateTime>(nullable: false),
-                    createdBy = table.Column<string>(nullable: true),
-                    modifiedOn = table.Column<DateTime>(nullable: true),
-                    modifiedBy = table.Column<string>(nullable: true)
+                    LocID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -167,13 +135,63 @@ namespace VSense.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "t_trkdo_assign",
+                columns: table => new
+                {
+                    TransID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TrkDoID = table.Column<string>(nullable: true),
+                    Object = table.Column<string>(nullable: true),
+                    ObjectNumber = table.Column<int>(nullable: false),
+                    AssingedOn = table.Column<DateTime>(nullable: false),
+                    RemovedOn = table.Column<DateTime>(nullable: false),
+                    isOpen = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_trkdo_assign", x => x.TransID);
+                    table.ForeignKey(
+                        name: "FK_t_trkdo_assign_m_TrkDo_TrkDoID",
+                        column: x => x.TrkDoID,
+                        principalTable: "m_TrkDo",
+                        principalColumn: "TrkDoID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "t_TrkDoLog",
+                columns: table => new
+                {
+                    LogID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TrkDoID = table.Column<string>(nullable: true),
+                    DeviceID = table.Column<string>(nullable: true),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
+                    Direction = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_TrkDoLog", x => x.LogID);
+                    table.ForeignKey(
+                        name: "FK_t_TrkDoLog_m_device_DeviceID",
+                        column: x => x.DeviceID,
+                        principalTable: "m_device",
+                        principalColumn: "DeviceID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_t_TrkDoLog_m_TrkDo_TrkDoID",
+                        column: x => x.TrkDoID,
+                        principalTable: "m_TrkDo",
+                        principalColumn: "TrkDoID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "t_device_assign_param",
                 columns: table => new
                 {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PramID = table.Column<string>(nullable: false),
                     assignmentID = table.Column<int>(nullable: false),
-                    PramID = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Unit = table.Column<string>(nullable: true),
                     longText = table.Column<string>(nullable: true),
@@ -184,16 +202,11 @@ namespace VSense.API.Migrations
                     Soft_2_Exception_Threshold = table.Column<float>(nullable: false),
                     Hard_1_Exception_Threshold = table.Column<float>(nullable: false),
                     Hard_2_Exception_Threshold = table.Column<float>(nullable: false),
-                    ActivityGraphTitle = table.Column<string>(nullable: true),
-                    isEnabled = table.Column<bool>(nullable: false),
-                    createdOn = table.Column<DateTime>(nullable: false),
-                    createdBy = table.Column<string>(nullable: true),
-                    modifiedOn = table.Column<DateTime>(nullable: true),
-                    modifiedBy = table.Column<string>(nullable: true)
+                    ActivityGraphTitle = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_t_device_assign_param", x => x.ID);
+                    table.PrimaryKey("PK_t_device_assign_param", x => x.PramID);
                     table.ForeignKey(
                         name: "FK_t_device_assign_param_t_device_assign_assignmentID",
                         column: x => x.assignmentID,
@@ -202,10 +215,48 @@ namespace VSense.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Device_log",
+                columns: table => new
+                {
+                    LogID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DeviceID = table.Column<string>(nullable: true),
+                    RefID = table.Column<string>(nullable: true),
+                    dateTime = table.Column<DateTime>(nullable: false),
+                    PramID = table.Column<string>(nullable: true),
+                    value = table.Column<float>(nullable: false),
+                    minValue = table.Column<float>(nullable: false),
+                    maxValue = table.Column<float>(nullable: false),
+                    avgValue = table.Column<float>(nullable: false),
+                    Threshold = table.Column<float>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Device_log", x => x.LogID);
+                    table.ForeignKey(
+                        name: "FK_Device_log_m_device_DeviceID",
+                        column: x => x.DeviceID,
+                        principalTable: "m_device",
+                        principalColumn: "DeviceID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Device_log_t_device_assign_param_PramID",
+                        column: x => x.PramID,
+                        principalTable: "t_device_assign_param",
+                        principalColumn: "PramID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_m_device_param_DeviceID",
-                table: "m_device_param",
+                name: "IX_Device_log_DeviceID",
+                table: "Device_log",
                 column: "DeviceID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Device_log_PramID",
+                table: "Device_log",
+                column: "PramID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_t_device_assign_DeviceID",
@@ -226,6 +277,21 @@ namespace VSense.API.Migrations
                 name: "IX_t_device_assign_param_assignmentID",
                 table: "t_device_assign_param",
                 column: "assignmentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_trkdo_assign_TrkDoID",
+                table: "t_trkdo_assign",
+                column: "TrkDoID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_TrkDoLog_DeviceID",
+                table: "t_TrkDoLog",
+                column: "DeviceID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_TrkDoLog_TrkDoID",
+                table: "t_TrkDoLog",
+                column: "TrkDoID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -237,7 +303,16 @@ namespace VSense.API.Migrations
                 name: "m_device_param");
 
             migrationBuilder.DropTable(
+                name: "t_trkdo_assign");
+
+            migrationBuilder.DropTable(
+                name: "t_TrkDoLog");
+
+            migrationBuilder.DropTable(
                 name: "t_device_assign_param");
+
+            migrationBuilder.DropTable(
+                name: "m_TrkDo");
 
             migrationBuilder.DropTable(
                 name: "t_device_assign");

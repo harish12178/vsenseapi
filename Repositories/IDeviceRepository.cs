@@ -8,8 +8,8 @@ namespace VSense.API.Repositories
 
             Task<List<Device_log>> GetAllLogs();
             Task<List<Device_log>> GetRecent();
-            Task<Device_log> GetLog(string DeviceID);
-            Task<Device_log> CreateLog(Device_log log);
+            Task<Device_log> GetLog(string DeviceID,string PramID);
+            Task<Device_log> CreateLog(logWithStatus log);
             
             Task<List<m_device>> GetAllDevices();
             Task<List<t_device_assign>> GetAllActiveDevices();
@@ -24,7 +24,7 @@ namespace VSense.API.Repositories
             Task DeleteDevice(string id);
             Task<m_device> CreateDevice(m_device device);
             Task<m_device> UpdateDevice(m_device device);
-            Task DeleteDeviceparam(string id);
+            Task DeleteDeviceparam(string deviceid,string paramid);
             Task<m_device_param> CreateDeviceParam(m_device_param device);
             Task<m_device_param> UpdateDeviceParam(m_device_param device);
             Task DeleteEquipment(string id);
@@ -35,12 +35,12 @@ namespace VSense.API.Repositories
             Task<m_Loc> UpdateLoc(m_Loc m_Loc);
             // Task DeleteTrkdo(string id);
             // Task<m_TrkDo> CreateTrkdo(m_TrkDo device);
-            Task DeleteDeviceAssign(string id);
+            Task DeleteDeviceAssign(int id);
             Task<t_device_assign> CreateDeviceAssign(t_device_assign device);
             Task<t_device_assign> UpdateDeviceAssign(t_device_assign device);
-            Task DeleteDeviceAssignParam(string id);
-            Task<t_device_assign_param> CreateDeviceAssignParam(t_device_assign_param device);
-            Task<t_device_assign_param> UpdateDeviceAssignParam(t_device_assign_param device);
+            Task DeleteDeviceAssignParam(string pramid,int assignmentid);
+            Task<List<t_device_assign_param>> CreateDeviceAssignParam(List<t_device_assign_param> device);
+            Task<List<t_device_assign_param>> UpdateDeviceAssignParam(List<t_device_assign_param> device);
 
             Task<m_device> GetDevice(string DeviceID);
             Task<m_device_param> GetDeviceparam(string ParamID);
@@ -48,13 +48,13 @@ namespace VSense.API.Repositories
             Task<m_Loc> GetLocation(string LocationID);
             // Task<m_TrkDo> GetTrkDo(string TrkdoID);
             Task<t_device_assign> GetDeviceAssign(int AssignmentID);
-            Task<t_device_assign_param> GetDeviceAssignParam(string PramID);
+            Task<t_device_assign_param> GetDeviceAssignParam(int AssignmentID,string PramID);
 
             Task<List<string>> GetDevicesByEquipment(string EquipmentID);
             Task<List<string>> Getalldeviceids();
             Task<List<string>> Getallequipmentids();
             Task<List<string>> Getalllocationids();
-            Task<t_device_assign> GetAssignidByDeviceid(string DeviceID);
+            t_device_assign GetAssignidByDeviceid(string DeviceID);
 
              
 

@@ -20,17 +20,12 @@ namespace VSense.API.Context
         // public DbSet <t_TrkDoLog> t_TrkDoLog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {            
-            // modelBuilder.Entity<m_device_param>()
-            //     .HasMany(c => c.paramAssigns)
-            //     .WithOne(e => e.deviceParam);
-            //modelBuilder.Entity<t_device_assign_param>().HasNoKey();
+        {             
+            modelBuilder.Entity<t_device_assign_param>().HasKey(o => new { o.assignmentID, o.PramID });
+            modelBuilder.Entity<m_device_param>().HasKey(o => new { o.DeviceID, o.ParamID });
             modelBuilder.Entity<m_device>()
                 .HasMany(c => c.deviceParams)
                 .WithOne(e => e.device);
-            // modelBuilder.Entity<m_device>()
-            //     .HasMany(c => c.deviceAssigns)
-            //     .WithOne(e => e.device);
         }
         
     }

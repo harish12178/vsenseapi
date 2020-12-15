@@ -22,14 +22,26 @@ namespace VSense.API.Repositories
             return await _context.Device_log.OrderByDescending(e=>e.LogID).Take(3).ToListAsync();
             
         }
-        public async Task<Device_log> GetLog(string id){
-            return await _context.Device_log.OrderByDescending(e=>e.LogID).FirstOrDefaultAsync(data=>data.DeviceID==id);
+        public async Task<Device_log> GetLog(string id,string PramID){
+            return await _context.Device_log.OrderByDescending(e=>e.LogID).FirstOrDefaultAsync(data=>data.DeviceID==id && data.PramID==PramID);
         }
-        public async Task<Device_log> CreateLog(Device_log log){
-                log.dateTime=DateTime.Now;
-                var new_log=await _context.Device_log.AddAsync(log);
-                await _context.SaveChangesAsync();
-                return new_log.Entity;
+        public async Task<Device_log> CreateLog(logWithStatus log){
+            var device=await _context.m_device.FirstOrDefaultAsync(e => e.DeviceID == log.DeviceID);;
+            device.Battery=log.Battery;
+            device.Healthy=log.Healthy;
+            var Device_log=new Device_log();
+            Device_log.DeviceID=log.DeviceID;
+            Device_log.RefID=log.RefID;
+            Device_log.dateTime=DateTime.Now;
+            Device_log.PramID=log.PramID;
+            Device_log.value=log.value;
+            Device_log.minValue=log.minValue;
+            Device_log.maxValue=log.maxValue;
+            Device_log.avgValue=log.avgValue;
+            Device_log.Threshold=log.Threshold;
+            var new_log=await _context.Device_log.AddAsync(Device_log);
+            await _context.SaveChangesAsync();
+            return new_log.Entity;
         }
         public async Task<m_device> CreateDevice(m_device device){
                 device.createdOn=DateTime.Now;
@@ -144,33 +156,51 @@ namespace VSense.API.Repositories
                 await _context.SaveChangesAsync();
                 return result;  
         }
-        public async Task<t_device_assign_param> CreateDeviceAssignParam(t_device_assign_param device){
-                device.createdOn=DateTime.Now;
-                device.isEnabled=true;
-                var new_log=await _context.t_device_assign_param.AddAsync(device);
+        public async Task<List<t_device_assign_param>> CreateDeviceAssignParam(List<t_device_assign_param> device){
+            var prams=new List<t_device_assign_param>();
+            foreach (var item in device)
+            {
+                item.isEnabled=true;
+                item.createdOn=DateTime.Now; 
+                var log=await _context.t_device_assign_param.AddAsync(item);
                 await _context.SaveChangesAsync();
-                return new_log.Entity;           
+                prams.Add(log.Entity);
+            }
+                return prams;           
         }
-        public async Task<t_device_assign_param> UpdateDeviceAssignParam(t_device_assign_param device){
-            var result = await _context.t_device_assign_param.FirstOrDefaultAsync(e => e.PramID == device.PramID);
-                result.assignmentID = device.assignmentID;
-                result.PramID = device.PramID;
-                result.Title = device.Title;
-                result.Unit=device.Unit;
-                result.longText=device.longText;
-                result.Max=device.Max;
-                result.Min=device.Min;
-                result.Icon=device.Icon;
-                result.Soft_1_Exception_Threshold=device.Soft_1_Exception_Threshold;
-                result.Soft_2_Exception_Threshold=device.Soft_2_Exception_Threshold;
-                result.Hard_1_Exception_Threshold=device.Hard_1_Exception_Threshold;
-                result.Hard_2_Exception_Threshold=device.Hard_2_Exception_Threshold;
-                result.ActivityGraphTitle=device.ActivityGraphTitle;
-                result.isEnabled=device.isEnabled;
-                result.modifiedOn=DateTime.Now;
-                result.modifiedBy=device.modifiedBy;
-                await _context.SaveChangesAsync();
-                return result;        
+        public async Task<List<t_device_assign_param>> UpdateDeviceAssignParam(List<t_device_assign_param> device){
+            var prams=new List<t_device_assign_param>();
+            foreach (var item in device)
+            {
+                var result = await _context.t_device_assign_param.FirstOrDefaultAsync(e => e.assignmentID == item.assignmentID && e.PramID==item.PramID);
+                if(result!=null){
+                    result.Title = item.Title;
+                    result.Unit=item.Unit;
+                    result.longText=item.longText;
+                    result.Max=item.Max;
+                    result.Min=item.Min;
+                    result.Icon=item.Icon;
+                    result.Soft_1_Exception_Threshold=item.Soft_1_Exception_Threshold;
+                    result.Soft_2_Exception_Threshold=item.Soft_2_Exception_Threshold;
+                    result.Hard_1_Exception_Threshold=item.Hard_1_Exception_Threshold;
+                    result.Hard_2_Exception_Threshold=item.Hard_2_Exception_Threshold;
+                    result.ActivityGraphTitle=item.ActivityGraphTitle;
+                    result.isEnabled=item.isEnabled;
+                    result.modifiedOn=DateTime.Now;
+                    result.modifiedBy=item.modifiedBy;
+                    await _context.SaveChangesAsync();
+                    prams.Add(result);
+                }
+                else{
+                    item.isEnabled=true;
+                    item.createdOn=DateTime.Now; 
+                    var log=await _context.t_device_assign_param.AddAsync(item);
+                    await _context.SaveChangesAsync();
+                    prams.Add(log.Entity);
+                }
+            }
+                
+                return prams;        
         }
 
 
@@ -203,8 +233,8 @@ namespace VSense.API.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task DeleteDeviceparam(string Id){
-            var result = await _context.m_device_param.FirstOrDefaultAsync(device => device.ParamID == Id);
+        public async Task DeleteDeviceparam(string deviceid,string paramid){
+            var result = await _context.m_device_param.FirstOrDefaultAsync(device => device.DeviceID == deviceid && device.ParamID==paramid);
             if (result != null)
             {
                 _context.m_device_param.Remove(result);
@@ -235,16 +265,16 @@ namespace VSense.API.Repositories
         //         await _context.SaveChangesAsync();
         //     }
         // }
-        public async Task DeleteDeviceAssign(string Id){
-            var result = await _context.t_device_assign.FirstOrDefaultAsync(device => device.DeviceID == Id);
+        public async Task DeleteDeviceAssign(int Id){
+            var result = await _context.t_device_assign.FirstOrDefaultAsync(device => device.assignmentID == Id);
             if (result != null)
             {
                 _context.t_device_assign.Remove(result);
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task DeleteDeviceAssignParam(string Id){
-            var result = await _context.t_device_assign_param.FirstOrDefaultAsync(device => device.PramID == Id);
+        public async Task DeleteDeviceAssignParam(string pramId,int assignmentID){
+            var result = await _context.t_device_assign_param.FirstOrDefaultAsync(device => device.PramID == pramId && device.assignmentID==assignmentID);
             if (result != null)
             {
                 _context.t_device_assign_param.Remove(result);
@@ -255,8 +285,8 @@ namespace VSense.API.Repositories
         public async Task<m_device> GetDevice(string id){
             return await _context.m_device.FirstOrDefaultAsync(data=>data.DeviceID==id);
         }
-        public async Task<t_device_assign_param> GetDeviceAssignParam(string id){
-            return await _context.t_device_assign_param.FirstOrDefaultAsync(data=>data.PramID==id);
+        public async Task<t_device_assign_param> GetDeviceAssignParam(int id,string pramID){
+            return await _context.t_device_assign_param.FirstOrDefaultAsync(data=>data.assignmentID==id && data.PramID==pramID);
         }
         public async Task<t_device_assign> GetDeviceAssign(int id){
             return await _context.t_device_assign.FirstOrDefaultAsync(data=>data.assignmentID==id);
@@ -286,8 +316,8 @@ namespace VSense.API.Repositories
         public async Task<List<string>> Getalllocationids(){
             return await _context.m_Loc.Select(data=>data.LocationID).ToListAsync();
         }
-        public async Task<t_device_assign> GetAssignidByDeviceid(string id){
-            return await _context.t_device_assign.FirstOrDefaultAsync(data=>data.DeviceID==id);
+        public t_device_assign GetAssignidByDeviceid(string id){
+            return _context.t_device_assign.FirstOrDefault(data=>data.DeviceID==id);
         }
 
         public async Task<List<t_device_assign>> GetAllDeviceassigns(){

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VSense.API.Context;
 
 namespace VSense.API.Migrations
 {
     [DbContext(typeof(DeviceContext))]
-    partial class DeviceContextModelSnapshot : ModelSnapshot
+    [Migration("20201027103237_seventh")]
+    partial class seventh
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,10 +29,10 @@ namespace VSense.API.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("DeviceID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PramID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RefID")
                         .HasColumnType("nvarchar(max)");
@@ -54,6 +56,10 @@ namespace VSense.API.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("LogID");
+
+                    b.HasIndex("DeviceID");
+
+                    b.HasIndex("PramID");
 
                     b.ToTable("Device_log");
                 });
@@ -289,34 +295,31 @@ namespace VSense.API.Migrations
 
             modelBuilder.Entity("VSense.API.Models.t_device_assign_param", b =>
                 {
-                    b.Property<int>("assignmentID")
-                        .HasColumnType("int");
-
                     b.Property<string>("PramID")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ActivityGraphTitle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float?>("Hard_1_Exception_Threshold")
+                    b.Property<float>("Hard_1_Exception_Threshold")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Hard_2_Exception_Threshold")
+                    b.Property<float>("Hard_2_Exception_Threshold")
                         .HasColumnType("real");
 
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float?>("Max")
+                    b.Property<float>("Max")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Min")
+                    b.Property<float>("Min")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Soft_1_Exception_Threshold")
+                    b.Property<float>("Soft_1_Exception_Threshold")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Soft_2_Exception_Threshold")
+                    b.Property<float>("Soft_2_Exception_Threshold")
                         .HasColumnType("real");
 
                     b.Property<string>("Title")
@@ -324,6 +327,9 @@ namespace VSense.API.Migrations
 
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("assignmentID")
+                        .HasColumnType("int");
 
                     b.Property<string>("createdBy")
                         .HasColumnType("nvarchar(max)");
@@ -343,15 +349,28 @@ namespace VSense.API.Migrations
                     b.Property<DateTime?>("modifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("assignmentID", "PramID");
+                    b.HasKey("PramID");
+
+                    b.HasIndex("assignmentID");
 
                     b.ToTable("t_device_assign_param");
+                });
+
+            modelBuilder.Entity("VSense.API.Models.Device_log", b =>
+                {
+                    b.HasOne("VSense.API.Models.m_device", "device")
+                        .WithMany()
+                        .HasForeignKey("DeviceID");
+
+                    b.HasOne("VSense.API.Models.t_device_assign_param", "device_Assign_Param")
+                        .WithMany()
+                        .HasForeignKey("PramID");
                 });
 
             modelBuilder.Entity("VSense.API.Models.m_device_param", b =>
                 {
                     b.HasOne("VSense.API.Models.m_device", "device")
-                        .WithMany("deviceParams")
+                        .WithMany()
                         .HasForeignKey("DeviceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

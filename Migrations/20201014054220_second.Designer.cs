@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VSense.API.Context;
 
 namespace VSense.API.Migrations
 {
     [DbContext(typeof(DeviceContext))]
-    partial class DeviceContextModelSnapshot : ModelSnapshot
+    [Migration("20201014054220_second")]
+    partial class second
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,10 +29,10 @@ namespace VSense.API.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("DeviceID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PramID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RefID")
                         .HasColumnType("nvarchar(max)");
@@ -55,6 +57,10 @@ namespace VSense.API.Migrations
 
                     b.HasKey("LogID");
 
+                    b.HasIndex("DeviceID");
+
+                    b.HasIndex("PramID");
+
                     b.ToTable("Device_log");
                 });
 
@@ -78,24 +84,31 @@ namespace VSense.API.Migrations
                     b.Property<string>("WorkCenter")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("createdBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("modifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("modifiedOn")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("LocationID");
 
                     b.ToTable("m_Loc");
+                });
+
+            modelBuilder.Entity("VSense.API.Models.m_TrkDo", b =>
+                {
+                    b.Property<string>("TrkDoID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LifeStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UniqueID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("isAssinged")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TrkDoID");
+
+                    b.ToTable("m_TrkDo");
                 });
 
             modelBuilder.Entity("VSense.API.Models.m_device", b =>
@@ -127,21 +140,6 @@ namespace VSense.API.Migrations
                     b.Property<float>("Vcc")
                         .HasColumnType("real");
 
-                    b.Property<string>("createdBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("modifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("modifiedOn")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("DeviceID");
 
                     b.ToTable("m_device");
@@ -150,9 +148,6 @@ namespace VSense.API.Migrations
             modelBuilder.Entity("VSense.API.Models.m_device_param", b =>
                 {
                     b.Property<string>("DeviceID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ParamID")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Color")
@@ -167,20 +162,14 @@ namespace VSense.API.Migrations
                     b.Property<int>("Min")
                         .HasColumnType("int");
 
+                    b.Property<string>("ParamID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("createdBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isEnabled")
-                        .HasColumnType("bit");
 
                     b.Property<string>("isPercentage")
                         .HasColumnType("nvarchar(max)");
@@ -188,13 +177,7 @@ namespace VSense.API.Migrations
                     b.Property<string>("longText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("modifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("modifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("DeviceID", "ParamID");
+                    b.HasKey("DeviceID");
 
                     b.ToTable("m_device_param");
                 });
@@ -216,24 +199,37 @@ namespace VSense.API.Migrations
                     b.Property<string>("Workcenter")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("createdBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("modifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("modifiedOn")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("EquipmentID");
 
                     b.ToTable("m_equipment");
+                });
+
+            modelBuilder.Entity("VSense.API.Models.t_TrkDoLog", b =>
+                {
+                    b.Property<int>("LogID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DeviceID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Direction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TrkDoID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LogID");
+
+                    b.HasIndex("DeviceID");
+
+                    b.HasIndex("TrkDoID");
+
+                    b.ToTable("t_TrkDoLog");
                 });
 
             modelBuilder.Entity("VSense.API.Models.t_device_assign", b =>
@@ -258,22 +254,7 @@ namespace VSense.API.Migrations
                     b.Property<DateTime>("StDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("createdBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdOn")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("enDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("modifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("modifiedOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("assignmentID");
@@ -289,34 +270,31 @@ namespace VSense.API.Migrations
 
             modelBuilder.Entity("VSense.API.Models.t_device_assign_param", b =>
                 {
-                    b.Property<int>("assignmentID")
-                        .HasColumnType("int");
-
                     b.Property<string>("PramID")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ActivityGraphTitle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float?>("Hard_1_Exception_Threshold")
+                    b.Property<float>("Hard_1_Exception_Threshold")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Hard_2_Exception_Threshold")
+                    b.Property<float>("Hard_2_Exception_Threshold")
                         .HasColumnType("real");
 
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float?>("Max")
+                    b.Property<float>("Max")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Min")
+                    b.Property<float>("Min")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Soft_1_Exception_Threshold")
+                    b.Property<float>("Soft_1_Exception_Threshold")
                         .HasColumnType("real");
 
-                    b.Property<float?>("Soft_2_Exception_Threshold")
+                    b.Property<float>("Soft_2_Exception_Threshold")
                         .HasColumnType("real");
 
                     b.Property<string>("Title")
@@ -325,36 +303,80 @@ namespace VSense.API.Migrations
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("createdBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isEnabled")
-                        .HasColumnType("bit");
+                    b.Property<int>("assignmentID")
+                        .HasColumnType("int");
 
                     b.Property<string>("longText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("modifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("PramID");
 
-                    b.Property<DateTime?>("modifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("assignmentID", "PramID");
+                    b.HasIndex("assignmentID");
 
                     b.ToTable("t_device_assign_param");
+                });
+
+            modelBuilder.Entity("VSense.API.Models.t_trkdo_assign", b =>
+                {
+                    b.Property<int>("TransID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AssingedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Object")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ObjectNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RemovedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TrkDoID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("isOpen")
+                        .HasColumnType("bit");
+
+                    b.HasKey("TransID");
+
+                    b.HasIndex("TrkDoID");
+
+                    b.ToTable("t_trkdo_assign");
+                });
+
+            modelBuilder.Entity("VSense.API.Models.Device_log", b =>
+                {
+                    b.HasOne("VSense.API.Models.m_device", "device")
+                        .WithMany()
+                        .HasForeignKey("DeviceID");
+
+                    b.HasOne("VSense.API.Models.t_device_assign_param", "device_Assign_Param")
+                        .WithMany()
+                        .HasForeignKey("PramID");
                 });
 
             modelBuilder.Entity("VSense.API.Models.m_device_param", b =>
                 {
                     b.HasOne("VSense.API.Models.m_device", "device")
-                        .WithMany("deviceParams")
+                        .WithMany()
                         .HasForeignKey("DeviceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("VSense.API.Models.t_TrkDoLog", b =>
+                {
+                    b.HasOne("VSense.API.Models.m_device", "device")
+                        .WithMany()
+                        .HasForeignKey("DeviceID");
+
+                    b.HasOne("VSense.API.Models.m_TrkDo", "TrkDo")
+                        .WithMany()
+                        .HasForeignKey("TrkDoID");
                 });
 
             modelBuilder.Entity("VSense.API.Models.t_device_assign", b =>
@@ -374,11 +396,24 @@ namespace VSense.API.Migrations
 
             modelBuilder.Entity("VSense.API.Models.t_device_assign_param", b =>
                 {
+                    b.HasOne("VSense.API.Models.m_device_param", "device_param")
+                        .WithMany()
+                        .HasForeignKey("PramID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("VSense.API.Models.t_device_assign", "device_assign")
                         .WithMany()
                         .HasForeignKey("assignmentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("VSense.API.Models.t_trkdo_assign", b =>
+                {
+                    b.HasOne("VSense.API.Models.m_TrkDo", "TrkDo")
+                        .WithMany()
+                        .HasForeignKey("TrkDoID");
                 });
 #pragma warning restore 612, 618
         }

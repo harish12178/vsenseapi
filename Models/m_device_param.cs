@@ -7,7 +7,6 @@ namespace VSense.API.Models
     public class m_device_param
     {
         public string DeviceID { get; set; }
-        [Key]
         public string ParamID { get; set; }
         public string Title { get; set; }
         public string Unit { get; set; }
@@ -24,6 +23,5 @@ namespace VSense.API.Models
         public string modifiedBy { get; set; }
         [ForeignKey("DeviceID")]
         public virtual m_device device { get; set; }
-        // public virtual ICollection<t_device_assign_param> paramAssigns { get; set; }
     }
 }

@@ -30,13 +30,13 @@ namespace VSense.API
             services.AddControllers().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            // services.AddDbContext<DeviceContext>(opt =>
-            //         opt.UseLazyLoadingProxies()
-            //         .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddDbContext<DeviceContext>(opt =>
-               opt.UseLazyLoadingProxies()
-               .UseNpgsql(Configuration.GetConnectionString("PostgreConnection")));
+                    opt.UseLazyLoadingProxies()
+                    .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // services.AddDbContext<DeviceContext>(opt =>
+            //    opt.UseLazyLoadingProxies()
+            //    .UseNpgsql(Configuration.GetConnectionString("PostgreConnection")));
                
             services.AddScoped<IDeviceRepository, DeviceRepository>();
             services.AddCors();

@@ -22,6 +22,6 @@ namespace VSense.API.Models
         public DateTime? modifiedOn { get; set; }
         public string modifiedBy { get; set; }
         public virtual ICollection<m_device_param> deviceParams { get; set; }
-        // public virtual ICollection<t_device_assign> deviceAssigns { get; set; }
+        
     }
 }
