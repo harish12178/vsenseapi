@@ -1,6 +1,8 @@
 using VSense.API.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 namespace VSense.API.Repositories
 {
     public interface IDeviceRepository
@@ -41,6 +43,8 @@ namespace VSense.API.Repositories
             Task DeleteDeviceAssignParam(string pramid,int assignmentid);
             Task<List<t_device_assign_param>> CreateDeviceAssignParam(List<t_device_assign_param> device);
             Task<List<t_device_assign_param>> UpdateDeviceAssignParam(List<t_device_assign_param> device);
+            Task<List<m_device_param>> createparamgroup(List<m_device_param> device);
+            Task<List<m_device_param>> updateparamgroup(List<m_device_param> device);
 
             Task<m_device> GetDevice(string DeviceID);
             Task<m_device_param> GetDeviceparam(string ParamID);
@@ -56,7 +60,9 @@ namespace VSense.API.Repositories
             Task<List<string>> Getalllocationids();
             t_device_assign GetAssignidByDeviceid(string DeviceID);
 
-             
+            ILookup<string,m_device_param> GetParamGroup();
+           ILookup<DateTime,Device_log> getdevicestatus() ;
+           ILookup<int,Device_log> getdevicestatusbymonth() ;
 
     }
 }

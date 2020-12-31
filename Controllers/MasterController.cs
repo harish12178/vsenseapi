@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using VSense.API.Repositories;
 using VSense.API.Models;
+using System.Collections.Generic;
 namespace VSense.API.Controllers
 {
     [Route("VSenseAPI/[controller]/[action]")]
@@ -168,6 +169,18 @@ namespace VSense.API.Controllers
         public async Task<IActionResult> getalllocationid(){
             return Ok(await repo.Getalllocationids());
         }
-        
+        public IActionResult getparamgroup(){
+            return Ok(repo.GetParamGroup());
+        }
+        public async Task<IActionResult> paramgroup(List<m_device_param> device)
+        {
+            var created=await repo.createparamgroup(device);
+            return Ok(created);
+        }
+        public async Task<IActionResult> updateparamgroup(List<m_device_param> device)
+        {
+            var created=await repo.updateparamgroup(device);
+            return Ok(created);
+        }
     }
 }

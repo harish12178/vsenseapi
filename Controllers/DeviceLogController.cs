@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VSense.API.Repositories;
 using VSense.API.Models;
+using System;
+using System.Linq;
 namespace VSense.API.Controllers
 {
     [Route("VSenseAPI/[controller]/[action]")]
@@ -64,6 +66,46 @@ namespace VSense.API.Controllers
             }
             var created_log=await repo.CreateLog(log);
             return Ok("Success");
+        }
+        class DeviceStatus
+        {
+            public DeviceStatus(DateTime datetime,int count)
+            {
+                this.date=datetime;
+                this.activeCount=count;
+            }
+            public DateTime date { get; set; }
+            public int activeCount { get; set; }
+        }
+        class DeviceStatusMonth
+        {
+            public DeviceStatusMonth(int datetime,int count)
+            {
+                this.month=datetime;
+                this.activeCount=count;
+            }
+            public int month { get; set; }
+            public int activeCount { get; set; }
+        }
+        public IActionResult devicestatus(){
+            var datewisedata=repo.getdevicestatus();
+            var outdata=new List<DeviceStatus>();
+            foreach (var item in datewisedata)
+            {
+                var deviceanddate=item.ToLookup(t => t.DeviceID);
+                outdata.Add(new DeviceStatus(item.Key,deviceanddate.Count));
+            }
+            return Ok(outdata);
+        }
+        public IActionResult devicestatusmonth(){
+            var datewisedata=repo.getdevicestatusbymonth();
+            var outdata=new List<DeviceStatusMonth>();
+            foreach (var item in datewisedata)
+            {
+                var deviceanddate=item.ToLookup(t => t.DeviceID);
+                outdata.Add(new DeviceStatusMonth(item.Key,deviceanddate.Count));
+            }
+            return Ok(outdata);
         }
         
     }

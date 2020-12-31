@@ -326,5 +326,57 @@ namespace VSense.API.Repositories
         public async Task<List<t_device_assign_param>> GetAllDeviceassignparams(){
             return await _context.t_device_assign_param.ToListAsync();
         }
+        public ILookup<string,m_device_param> GetParamGroup(){
+            return _context.m_device_param.ToLookup(x=>x.DeviceID);
+        }
+        public async Task<List<m_device_param>> createparamgroup(List<m_device_param> device){
+            var prams=new List<m_device_param>();
+            foreach (var item in device)
+            {
+                item.isEnabled=true;
+                item.createdOn=DateTime.Now; 
+                var log=await _context.m_device_param.AddAsync(item);
+                await _context.SaveChangesAsync();
+                prams.Add(log.Entity);
+            }
+                return prams;           
+        }
+        public async Task<List<m_device_param>> updateparamgroup(List<m_device_param> device){
+            var prams=new List<m_device_param>();
+            foreach (var item in device)
+            {
+                var result = await _context.m_device_param.FirstOrDefaultAsync(e => e.DeviceID == item.DeviceID && e.ParamID==item.ParamID);
+                if(result!=null){
+                    result.Title = item.Title;
+                    result.Unit=item.Unit;
+                    result.longText=item.longText;
+                    result.Max=item.Max;
+                    result.Min=item.Min;
+                    result.isPercentage=item.isPercentage;
+                    result.Color=item.Color;
+                    result.Icon=item.Icon;
+                    result.isEnabled=item.isEnabled;
+                    result.modifiedOn=DateTime.Now;
+                    result.modifiedBy=item.modifiedBy;
+                    await _context.SaveChangesAsync();
+                    prams.Add(result);
+                }
+                else{
+                    item.isEnabled=true;
+                    item.createdOn=DateTime.Now; 
+                    var log=await _context.m_device_param.AddAsync(item);
+                    await _context.SaveChangesAsync();
+                    prams.Add(log.Entity);
+                }
+            }
+                
+                return prams;        
+        }
+        public ILookup<DateTime,Device_log> getdevicestatus(){
+            return _context.Device_log.ToLookup(t => t.dateTime.Date);
+        }
+        public ILookup<int,Device_log> getdevicestatusbymonth(){
+            return _context.Device_log.ToLookup(t => t.dateTime.Month);
+        }
     }
 }
